@@ -61,27 +61,27 @@ RewriteRule ^(.*)$ /path/to/your/index.php?app-slug=$1 [L,QSA]
 
 ### Controllers and Actions
 
-```html
+```
 http://host/base-path/controller/action/param1/param2
 ```
 
 The URL above shows the controller & action with theirs params
 
-```html
+```
 http://host/base-path/
 ```
 
 is a special controller and a special action. In this case the controller is named Application and the action index()
 
-```html
+```
 http://host/base_path/xyz
 ```
 
 Here the controller is Xyz and the action is index()
 
-```html
+```
 http://host/base_path/xyz/do
-```html
+```
 
 Again the controller is Xyz and the action is `do()`
 
@@ -103,7 +103,7 @@ class Accounts extends \Scandio\lmvc\Controller {
     }
 
 }
-```php
+```
 
 Try to hit the url `http://host/base-path/accounts/`
 
@@ -178,7 +178,7 @@ class Accounts extends \Scandio\lmvc\Controller {
 
     public static function index() {
         self::renderHtml(
-            '<h2>Sorry, you've been using from credentials!</h2>'
+            "<h2>Sorry, you've been using from credentials!</h2>"
         );
     }
 
@@ -219,7 +219,7 @@ class Users extends \Scandio\lmvc\Controller {
 
 Anyhow, methods on the controller would not be invoked with a fully qualifying name such as `http://host/base-path/users/get-user/1`. Fireing a GET-Request to the url `http://host/base-path/users/user/1` would be sufficient as lmvc searches for a method by the name of `getUser` whenever it was unable to find the `user`-method.
 
-## Integrating with Modules
+## Integrating with lmvc-modules
 
 LMVC comes with an own, not baked in, library of modules which you can use and extend at free will. Modules can integrate with view functionalities or hook themselves into an own controller namespace.
 Feel free to check out the [existing set of modules](https://github.com/scandio/lmvc-modules).
