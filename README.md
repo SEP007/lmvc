@@ -15,7 +15,7 @@ To start a project from scratch you might want to look into [LMVC-Afresh](https:
 
 ## A Project's Directory-tree
 
-A lmvc project normally has a bunch of standard directories which you need to setup in the application's [config-file](https://github.com/scandio/lmvc-afresh/blob/master/config.json).
+A LMVC project normally has a bunch of standard directories which you need to setup in the application's [config-file](https://github.com/scandio/lmvc-afresh/blob/master/config.json).
 
 Generally a tree would look like this:
 
@@ -47,7 +47,7 @@ Generally a tree would look like this:
 
 The main thing to notice and take away, is an intended nameing-relation between `/controllers`, `/models`, `/views` and maybe `/forms` tends to exist. All of which interoperate in fulfilling a request which is first mapped to a controller and goes from their depending on its logic.
 
-The roles of *models*, *views* and *controllers* are fairly straight forward and follow the *MVC-paradigma* as a lmvc itself does not give you anything else.
+The roles of *models*, *views* and *controllers* are fairly straight forward and follow the *MVC-paradigma* as a LMVC itself does not give you anything else.
 
 Using the [module library](https://github.com/scandio/lmvc-modules) gives you, as noted at this readme's end, a lot more. Where *forms* should take over whenever a model needs validation. In addition, a *SnippetHandler* offers a unified way of accessing simple code-snippets (e.g. Html) - but first keep on reading an checkout the modules later!
 
@@ -191,7 +191,7 @@ As a side not: if you want to render a plain template without layout with e.g. [
 
 ### Using Http-Verb Prefixes
 
-Using the Http-Verb (GET, POST, DELETE, PUT and UPDATE) as a prefix for your apps' constroller can be greatly helpful.
+Using the Http-Verb (`GET`, `POST`, `DELETE`, `PUT` and `UPDATE`) as a prefix for your apps' constroller can be greatly helpful.
 
 This could result in a controller having the following methods:
 
@@ -217,7 +217,7 @@ class Users extends \Scandio\lmvc\Controller {
 }
 ```
 
-Anyhow, methods on the controller would not be invoked with a fully qualifying name such as `http://host/base-path/users/get-user/1`. Fireing a GET-Request to the url `http://host/base-path/users/user/1` would be sufficient as lmvc searches for a method by the name of `getUser` whenever it was unable to find the `user`-method.
+Anyhow, methods on the controller do not need to be invoked with a fully qualifying name such as `http://host/base-path/users/get-user/1`. Fireing a `GET-Request` to the url `http://host/base-path/users/user/1` would be sufficient as LMVC searches for a method by the name of `getUser` ( as `$_SERVER['REQUEST_METHOD'] === 'GET'`) whenever it was unable trying to find the `user`-method first.
 
 ## Integrating with lmvc-modules
 
