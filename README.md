@@ -17,33 +17,33 @@ To start a project from scratch you might want to look into [LMVC-Afresh](https:
 
 A LMVC project normally has a bunch of standard directories which you need to setup in the application's [config-file](https://github.com/scandio/lmvc-afresh/blob/master/config.json).
 
-Generally a tree would look like this:
+Generally a tree would look like this (bold is mandatory, italic optional):
 
-- app
-    - views
-        - Controller1
+- **/app**
+    - **/views**
+        - **Controller1**
             - actionName.html
             - actionName2.html
-        - Controller2
+        - **Controller2**
             - actionName.html
-    - controllers
+    - **/controllers**
         - Controller1.php
         - Controller2.php
-    - models
+    - */models*
         - Model1.php
         - Model2.php
-    - forms
+    - */forms*
         - Model1.php
         - AFormName.php
-    - ui
+    - */ui*
         - Handler1.php
-            - snippets
+            - */snippets*
                 - snippet1.html
                 - snippet2.html
-    - stylesheets
-    - javascripts
-    - img
-    - ...
+    - */stylesheets*
+    - */javascripts*
+    - */img*
+    - *...more assets* ([later look at AssetPipeline module too](https://github.com/scandio/lmvc-modules/tree/master/lib/Scandio/lmvc/modules/assetpipeline))
 
 The main thing to notice and take away, is an intended nameing-relation between `/controllers`, `/models`, `/views` and maybe `/forms` tends to exist. All of which interoperate in fulfilling a request which is first mapped to a controller and goes from their depending on its logic.
 
