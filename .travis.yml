@@ -1,0 +1,14 @@
+notifications:
+  email: false
+  hipchat:
+    - secure: "NkkGC9k3KpH7IehodpT61778pesbv1mi3LNcuqp9D+rjk4BqT4AQOOm60392ueprSl6syE42T2UZvJkdGdD1kuOMX7siIzeGlheovhRcs40INFmnQYJKf+vQNx1HYeYrmB3/vlS49WuiA/iLoPeOzg8PUHlAAQPLrlhN5/YXH8Q="
+language: php
+php:
+  - 5.4
+  - 5.5
+before_script:
+  - phpenv config-add .travis.ini
+  - composer install
+script: sh scripts/test.sh
+after_script:
+  - php bin/coveralls

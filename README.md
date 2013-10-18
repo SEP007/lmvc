@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/SEP007/lmvc.png)](https://travis-ci.org/SEP007/lmvc)
+[![Coverage Status](https://coveralls.io/repos/SEP007/lmvc/badge.png)](https://coveralls.io/r/SEP007/lmvc)
+[![Dependency Status](https://www.versioneye.com/user/projects/5260f1e9632bac3fac00023b/badge.png)](https://www.versioneye.com/user/projects/5260f1e9632bac3fac00023b)
+
 # LMVC (cool)
 
 ## Lean Model View Controller
