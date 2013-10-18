@@ -1,7 +1,4 @@
 /.idea/
 /vendor/
 /composer.lock
-/tests/lib/
-/tests/logs/*
-!/tests/logs/.gitkeep
 /bin/
