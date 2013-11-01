@@ -2,6 +2,8 @@
 
 namespace Scandio\lmvc;
 
+use Scandio\lmvc\utils\string\StringUtils;
+
 /**
  * Static class for each action controller
  *
@@ -161,7 +163,7 @@ abstract class Controller
         if ($template) {
             $app->view = $app->config->appPath . $template;
         } else {
-            $app->view = self::searchView(LVC::camelCaseTo($app->controller) . '/' . LVC::camelCaseTo($app->actionName) . '.html');
+            $app->view = self::searchView(StringUtils::camelCaseTo($app->controller) . '/' . StringUtils::camelCaseTo($app->actionName) . '.html');
         }
         if (!is_null($masterTemplate)) {
             $masterTemplate = $app->config->appPath . $masterTemplate;
