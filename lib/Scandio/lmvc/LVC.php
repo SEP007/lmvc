@@ -2,6 +2,8 @@
 
 namespace Scandio\lmvc;
 
+use Scandio\lmvc\utils\bootstrap;
+
 /**
  * Class LVC
  * @package Scandio\lmvc
@@ -124,19 +126,19 @@ class LVC
         Config::initialize($configFile);
 
         $config = Config::get();
-        foreach (self::getModulePaths($config->modules) as $modulePath) {
-            self::registerBootstrapNamespace($modulePath);
-        }
+
+        bootstrap\Butler::initialize(self::getModulePaths($config->modules));
 
         foreach ($config->controllers as $controller) {
             self::registerControllerNamespace($controller);
         }
+
         foreach ($config->views as $view) {
             self::registerViewDirectory($view);
         }
 
         if (isset($config->appNamespace)) {
-            self::registerBootstrapNamespace($config->appNamespace);
+            bootstrap\Butler::initialize($config->appNamespace);
         }
     }
 
@@ -172,24 +174,6 @@ class LVC
         }
 
         return $modulePaths;
-    }
-
-    /**
-     * Used to initialize modules and potentially the app itself
-     *
-     * @static
-     * @param string $namespace namespace specification as a string that contains a class 'Bootstrap'
-     * @return void
-     */
-    private static function registerBootstrapNamespace($namespace)
-    {
-        $bootstrap = $namespace . '\\Bootstrap';
-        if (class_exists($bootstrap)) {
-            $namespaceLoader = new $bootstrap;
-            if($namespaceLoader instanceof BootstrapInterface) {
-                $namespaceLoader->initialize();
-            }
-        }
     }
 
     /**
