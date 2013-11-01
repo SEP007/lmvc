@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=5.4",
-        "scandio/lmvc-utils": "dev-master"
+        "scandio/lmvc-utils": "dev-feature/psr3-logger"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
