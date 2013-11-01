@@ -3,6 +3,7 @@
 namespace Scandio\lmvc;
 
 use Scandio\lmvc\utils\bootstrap;
+use Scandio\lmvc\utils\config\Config;
 
 /**
  * Class LVC
