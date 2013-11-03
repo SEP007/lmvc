@@ -182,7 +182,7 @@ class Accounts extends \Scandio\lmvc\Controller {
 
     public static function index() {
         self::renderHtml(
-            "<h2>Sorry, you've been using from credentials!</h2>"
+            "<h2>Sorry, you've been using wrong credentials!</h2>"
         );
     }
 
