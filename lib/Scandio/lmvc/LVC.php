@@ -2,8 +2,13 @@
 
 namespace Scandio\lmvc;
 
+use Scandio\lmvc\utils\bootstrap;
+use Scandio\lmvc\utils\config\Config;
+use Scandio\lmvc\utils\string\StringUtils;
+
 /**
- * Basic application of LMVC
+ * Class LVC
+ * @package Scandio\lmvc
  */
 class LVC
 {
@@ -120,22 +125,22 @@ class LVC
      */
     public static function initialize($configFile = null)
     {
-        LVCConfig::initialize($configFile);
+        Config::initialize($configFile);
 
-        $config = LVCConfig::get();
-        foreach (self::getModulePaths($config->modules) as $modulePath) {
-            self::registerBootstrapNamespace($modulePath);
-        }
+        $config = Config::get();
+
+        bootstrap\Butler::initialize(self::getModulePaths($config->modules));
 
         foreach ($config->controllers as $controller) {
             self::registerControllerNamespace($controller);
         }
+
         foreach ($config->views as $view) {
             self::registerViewDirectory($view);
         }
 
         if (isset($config->appNamespace)) {
-            self::registerBootstrapNamespace($config->appNamespace);
+            bootstrap\Butler::initialize($config->appNamespace);
         }
     }
 
@@ -174,24 +179,6 @@ class LVC
     }
 
     /**
-     * Used to initialize modules and potentially the app itself
-     *
-     * @static
-     * @param string $namespace namespace specification as a string that contains a class 'Bootstrap'
-     * @return void
-     */
-    private static function registerBootstrapNamespace($namespace)
-    {
-        $bootstrap = $namespace . '\\Bootstrap';
-        if (class_exists($bootstrap)) {
-            $namespaceLoader = new $bootstrap;
-            if (is_subclass_of($namespaceLoader, '\\Scandio\\lmvc\\Bootstrap')) {
-                $namespaceLoader->initialize();
-            }
-        }
-    }
-
-    /**
      * registers a new controller namespace to search for the controllers
      *
      * @static
@@ -212,7 +199,7 @@ class LVC
             echo "-->" . PHP_EOL;
             return;
         }
-        array_unshift(LVCConfig::get()->controllerPath, $namespace);
+        array_unshift(Config::get()->controllerPath, $namespace);
     }
 
     /**
@@ -233,7 +220,7 @@ class LVC
             $namespace = $module;
         }
 
-        return in_array($namespace, LVCConfig::get()->modules);
+        return in_array($namespace, Config::get()->modules);
     }
 
     /**
@@ -255,7 +242,7 @@ class LVC
             echo "-->" . PHP_EOL;
             return;
         }
-        array_unshift(LVCConfig::get()->viewPath, $viewPath);
+        array_unshift(Config::get()->viewPath, $viewPath);
     }
 
     /**
@@ -277,14 +264,14 @@ class LVC
      */
     private function setController($slug)
     {
-        $this->controller = ucfirst(LVC::camelCaseFrom($slug[0]));
+        $this->controller = ucfirst(StringUtils::camelCaseFrom($slug[0]));
 
         if (!self::searchController()) {
             $this->controller = 'Application';
             if (!self::searchController()) {
-                echo PHP_EOL . "<!-- Couldn't find either the Controller '" . ucfirst(LVC::camelCaseFrom($slug[0])) .
+                echo PHP_EOL . "<!-- Couldn't find either the Controller '" . ucfirst(StringUtils::camelCaseFrom($slug[0])) .
                     "' or '" . $this->controller . "' in the following namespaces:" . PHP_EOL . PHP_EOL;
-                print_r(LVCConfig::get()->controllerPath);
+                print_r(Config::get()->controllerPath);
                 echo "-->" . PHP_EOL;
                 exit;
             }
@@ -303,7 +290,7 @@ class LVC
     {
         $controllerFound = false;
 
-        foreach (LVCConfig::get()->controllerPath as $path) {
+        foreach (Config::get()->controllerPath as $path) {
             if (class_exists($path . '\\' . $this->controller)) {
                 $this->controllerNamespace = $path;
                 $controllerFound = true;
@@ -323,7 +310,7 @@ class LVC
     private function setAction($slug)
     {
         $slug = (isset($slug[0])) ? $slug : array("");
-        $this->action = LVC::camelCaseFrom($slug[0]);
+        $this->action = StringUtils::camelCaseFrom($slug[0]);
         $this->actionName = $this->action;
         if (is_callable($this->controllerFQCN . '::' . strtolower($this->requestMethod) . ucfirst($this->action))) {
             $this->action = strtolower($this->requestMethod) . ucfirst($this->action);
@@ -364,7 +351,7 @@ class LVC
         } elseif (in_array($name, array('request'))) {
             $result = (object)$this->$name;
         } elseif ($name === 'config') {
-            $result = LVCConfig::get();
+            $result = Config::get();
         } elseif (in_array($name, array('controllerFQCN'))) { // Fully Qualified Class Name
             $result = $this->controllerNamespace . '\\' . $this->controller;
         }
@@ -421,8 +408,8 @@ class LVC
             $params = array($params);
         }
         $method = explode('::', $method);
-        $controller = ($method[0] == 'Application') ? '/' : '/' . LVC::camelCaseTo($method[0]);
-        $action = ($method[1] == 'index') ? '/' : '/' . LVC::camelCaseTo($method[1]);
+        $controller = ($method[0] == 'Application') ? '/' : '/' . StringUtils::camelCaseTo($method[0]);
+        $action = ($method[1] == 'index') ? '/' : '/' . StringUtils::camelCaseTo($method[1]);
         return $this->uri .
             (($controller == '/' && $action != '/') ? '' : $controller) .
             (($action == '/') ? '' : $action) .
@@ -441,38 +428,6 @@ class LVC
             call_user_func_array($this->controllerFQCN . '::' . $this->action, $this->params);
         }
         call_user_func_array($this->controllerFQCN . '::postProcess', $this->params);
-    }
-
-    /**
-     * Helper for string manipulation
-     *
-     * @static
-     * @param string $camelCasedString any camelCasedString
-     * @param string $delimiter optional default is '-'
-     * @return string a lower cased string with a delimiter before each hump
-     */
-    public static function camelCaseTo($camelCasedString, $delimiter = '-')
-    {
-        return strtolower(preg_replace('/(?<=\\w)(?=[A-Z])/', $delimiter . "$1", $camelCasedString));
-    }
-
-    /**
-     * Helper for string manipulation
-     *
-     * @static
-     * @param string $otherString any string like 'test-string'
-     * @param string $delimiter optional default is '-'
-     * @return string a camelCasedString with humps for each found delimiter
-     */
-    public static function camelCaseFrom($otherString, $delimiter = '-')
-    {
-        return lcfirst(
-            implode('',
-                array_map(function ($data) {
-                    return ucfirst($data);
-                }, explode($delimiter, $otherString))
-            )
-        );
     }
 
 }
