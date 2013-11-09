@@ -203,4 +203,14 @@ abstract class Controller
     {
         return true;
     }
+
+    public function __callStatic($name, $args = [])
+    {
+        if (StringUtils::starts($name, 'render')) {
+            #call_user_func_array('static::' . $engine, $args);
+        } else {
+            # Fallback to use original method
+            call_user_func_array('static::' . $name, $args);
+        }
+    }
 }
