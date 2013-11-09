@@ -89,7 +89,7 @@ abstract class Controller
         if ($template) {
             $app->view = $app->config->appPath . $template;
         } else {
-            $app->view = self::searchView(StringUtils::camelCaseTo($app->controller) . '/' . StringUtils::camelCaseTo($app->actionName) . '.html');
+            $app->view = self::searchView(StringUtils::camelCaseTo($app->controller) . DIRECTORY_SEPARATOR . StringUtils::camelCaseTo($app->actionName) . '.html');
         }
         if (!is_null($masterTemplate)) {
             $masterTemplate = $app->config->appPath . $masterTemplate;
@@ -97,6 +97,27 @@ abstract class Controller
             $masterTemplate = self::searchView('main.html');
         }
         include($masterTemplate);
+        return true;
+    }
+
+    public static function renderEngine($engine, $renderArgs = array(), $template = null, $httpCode = 200)
+    {
+        $app = LVC::get();
+        http_response_code($httpCode);
+
+        $renderer =  Scandio\lmvc\modules\rendering\Renderer::get($engine);
+
+        if ($template) {
+            $app->view = $app->config->appPath . $template;
+        } else {
+            $app->view = self::searchView(
+              StringUtils::camelCaseTo($app->controller) . DIRECTORY_SEPARATOR .
+              StringUtils::camelCaseTo($app->actionName) .
+              '.' . $renderer->getExtension());
+        }
+
+        echo $renderer->render($renderArgs, $template);
+
         return true;
     }
 
