@@ -3,6 +3,7 @@
 namespace Scandio\lmvc;
 
 use Scandio\lmvc\utils\string\StringUtils;
+use Scandio\lmvc\modules\rendering\Renderer;
 
 /**
  * Static class for each action controller
@@ -108,7 +109,7 @@ abstract class Controller
         $app = LVC::get();
         http_response_code($httpCode);
 
-        $renderer =  Scandio\lmvc\modules\rendering\Renderer::get($engine);
+        $renderer =  Renderer::get($engine);
 
         if ($template) {
             $app->view = $app->config->appPath . $template;
@@ -116,13 +117,56 @@ abstract class Controller
             $app->view = self::searchView(
               StringUtils::camelCaseTo($app->controller) . DIRECTORY_SEPARATOR .
               StringUtils::camelCaseTo($app->actionName) .
-              '.' . $renderer->getExtension()
+              '.' . $renderer->getExtention()
             );
         }
 
-        echo $renderer->render($renderArgs, $template);
+        $renderer->render($renderArgs, $template);
 
         return true;
+    }
+
+    /**
+     * DEPRICATED! Use renderEngine('json', ...) instead!
+     *
+     * renders the $renderArgs Array to a valid JSON output
+     * if there are complex objects in $renderArgs you need
+     * to develop an own ArrayBuilder class for conversion
+     *
+     * if it's set a callback method name in the GET parameter
+     * a javascript method will be submitted
+     *
+     * @static
+     * @param null|array|object $renderArgs optional an associative array of values
+     * @param int $httpCode optional a valid http status code like 200, 403, 404 or 500 defaults to 200
+     * @param ArrayBuilderInterface $arrayBuilder optional your converter class based on ArrayBuilder interface
+     * @return bool
+     */
+    public static function renderJson($renderArgs = null, $httpCode = 200)
+    {
+        static::renderEngine('json', $renderArgs);
+    }
+
+    /**
+     * DEPRICATED! Use renderEngine('html', ...) instead!
+     *
+     * renders the $renderArgs Array to a valid JSON output
+     * if there are complex objects in $renderArgs you need
+     * to develop a own ArrayBuilder class for conversion
+     *
+     * if it's set a callback method name in the GET parameter
+     * a java script method will be submitted
+     *
+     * @static
+     * @param $html
+     * @param int $httpCode optional a valid http status code like 200, 403, 404 or 500 defaults to 200
+     * @internal param array|null|object $renderArgs optional an associative array of values
+     * @internal param \Scandio\lmvc\ArrayBuilderInterface $arrayBuilder optional your converter class based on ArrayBuilder interface
+     * @return bool
+     */
+    public static function renderHtml($html, $httpCode = 200)
+    {
+        static::renderEngine('html', $html);
     }
 
     /**
