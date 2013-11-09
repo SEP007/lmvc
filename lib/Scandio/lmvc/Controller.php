@@ -89,7 +89,10 @@ abstract class Controller
         if ($template) {
             $app->view = $app->config->appPath . $template;
         } else {
-            $app->view = self::searchView(StringUtils::camelCaseTo($app->controller) . DIRECTORY_SEPARATOR . StringUtils::camelCaseTo($app->actionName) . '.html');
+            $app->view = self::searchView(
+              StringUtils::camelCaseTo($app->controller) . DIRECTORY_SEPARATOR .
+              StringUtils::camelCaseTo($app->actionName) . '.html'
+            );
         }
         if (!is_null($masterTemplate)) {
             $masterTemplate = $app->config->appPath . $masterTemplate;
@@ -113,7 +116,8 @@ abstract class Controller
             $app->view = self::searchView(
               StringUtils::camelCaseTo($app->controller) . DIRECTORY_SEPARATOR .
               StringUtils::camelCaseTo($app->actionName) .
-              '.' . $renderer->getExtension());
+              '.' . $renderer->getExtension()
+            );
         }
 
         echo $renderer->render($renderArgs, $template);
@@ -202,15 +206,5 @@ abstract class Controller
     public static function postProcess()
     {
         return true;
-    }
-
-    public function __callStatic($name, $args = [])
-    {
-        if (StringUtils::starts($name, 'render')) {
-            #call_user_func_array('static::' . $engine, $args);
-        } else {
-            # Fallback to use original method
-            call_user_func_array('static::' . $name, $args);
-        }
     }
 }
