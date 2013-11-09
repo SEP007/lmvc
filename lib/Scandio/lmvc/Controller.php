@@ -79,6 +79,8 @@ abstract class Controller
      * @internal param \Scandio\lmvc\ArrayBuilderInterface $arrayBuilder optional your converter class based on ArrayBuilder interface
      * @return bool
      */
+
+    //TODO: To be refactored/moved within rendering story
     public static function renderHtml($html, $httpCode = 200)
     {
         http_response_code($httpCode);
@@ -102,6 +104,8 @@ abstract class Controller
      * @param ArrayBuilderInterface $arrayBuilder optional your converter class based on ArrayBuilder interface
      * @return bool
      */
+
+    //TODO: To be refactored/moved within rendering story
     public static function renderJson($renderArgs = null, $httpCode = 200, ArrayBuilderInterface $arrayBuilder = null)
     {
         http_response_code($httpCode);
@@ -124,6 +128,8 @@ abstract class Controller
      * @param ArrayBuilderInterface $arrayBuilder
      * @return string
      */
+
+    //TODO: To be refactored/moved within rendering story
     protected static function buildJson($renderArgs = null, ArrayBuilderInterface $arrayBuilder = null) {
         $result = [];
         if (is_object($renderArgs) && $arrayBuilder instanceof ArrayBuilderInterface) {
@@ -154,6 +160,8 @@ abstract class Controller
      * @param string $masterTemplate optional a file name like 'views/test/test.html' which overwrites the default master
      * @return bool
      */
+
+    //TODO: To be refactored/moved within rendering story
     public static function render($renderArgs = array(), $template = null, $httpCode = 200, $masterTemplate = null)
     {
         http_response_code($httpCode);
@@ -181,6 +189,8 @@ abstract class Controller
      * @param $view
      * @return string|bool either the view's full path or false
      */
+
+    //TODO: To be refactored/moved within rendering story
     private static function searchView($view)
     {
         $config = LVC::get()->config;
