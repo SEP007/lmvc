@@ -13,14 +13,12 @@
     ],
     "require": {
         "php": ">=5.4",
-        "scandio/lmvc-utils": "dev-feature/psr3-logger"
+        "scandio/lmvc-utils": "dev-master"
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/SEP007/lmvc-utils.git"
-        }
-    ],
+    "repositories": [{
+        "type": "git",
+        "url": "https://github.com/SEP007/lmvc-utils.git"
+    }],
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
         "satooshi/php-coveralls": "dev-master"
