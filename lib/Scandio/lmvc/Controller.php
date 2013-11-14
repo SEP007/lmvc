@@ -21,7 +21,7 @@ abstract class Controller
     /**
      * @var array associative array of values for rendering
      */
-    private static $renderArgs  = array();
+    protected static $renderArgs  = array();
 
     /**
      * Shorthand to the request data of the http request
@@ -38,7 +38,7 @@ abstract class Controller
     public static function renderEngine($engine, $renderArgs = array(), $templates = null, $httpCode = 200)
     {
         http_response_code($httpCode);
-        
+
         $engine     = $engine != null ? strtolower($engine) : 'php'; # Could be config value
         $app        = LVC::get();
         $renderer   = Renderer::get($engine);
