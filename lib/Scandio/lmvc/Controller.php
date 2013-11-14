@@ -21,7 +21,7 @@ abstract class Controller
     /**
      * @var array associative array of values for rendering
      */
-    private static $renderArgs  = array();
+    protected static $renderArgs  = array();
 
     /**
      * Shorthand to the request data of the http request
