@@ -211,6 +211,29 @@ abstract class Controller
     }
 
     /**
+     * Redirects browser to last visited page using the http_referer.
+     * Do not call render when using back!
+     *
+     * Note:
+     *  Watch out. Calling it n-times will get you in a loop: A->B->A->B.
+     *  As the referer always points to the last page and does not
+     *  maintain a stack of pages.
+     *
+     * @return bool being false if referer for redirection is not set
+     */
+    public static function back()
+    {
+        # Get the referer only if set
+        $url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : false;
+
+        # redirect only if possible
+        if ($url !== false) { header('Location: ' . $url); }
+
+        # will only return is redirect did not work
+        return true;
+    }
+
+    /**
      * override it if your controller need a pre processor method
      *
      * @static
