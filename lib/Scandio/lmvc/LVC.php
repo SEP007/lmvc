@@ -224,7 +224,9 @@ class LVC
     }
 
     /**
-     * registers a new view directory to search for the views
+     * DEPRICATED! Use Renderer
+     *
+     * Registers a new view directory to search for the views
      *
      * @static
      * @param array|string $path specifies the directory to register
@@ -232,17 +234,7 @@ class LVC
      */
     public static function registerViewDirectory($path)
     {
-        if (is_array($path)) {
-            $viewPath = implode('/', $path);
-        } elseif (is_string($path)) {
-            $viewPath = $path;
-        } else {
-            echo PHP_EOL . "<!-- Couldn't register ViewDirectory:" . PHP_EOL;
-            print_r($path);
-            echo "-->" . PHP_EOL;
-            return;
-        }
-        array_unshift(Config::get()->viewPath, $viewPath);
+        \Scandio\lmvc\modules\rendering\Renderer::registerViewDirectory($path);
     }
 
     /**
