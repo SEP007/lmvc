@@ -260,22 +260,24 @@ class LVC
         $this->controller = ucfirst(StringUtils::camelCaseFrom($slug[0]));
 
         if (!self::searchController()) {
+            Logger::instance()->error(
+              'Couldnt find the Controller {controller} in the following namespaces: {namespaces}!', [
+                'controller' => $this->controller,
+                'namespaces' => Config::get()->controllerPath
+              ]
+            );
+
             $this->controller = 'Application';
+
             if (!self::searchController()) {
-                Logger::instance()->error(
-                  'Couldnt find either the Controller {controller}
-                  in the following namespaces: {namespaces}!',
-                  [
-                    'controller' => ucfirst(StringUtils::camelCaseFrom($slug[0])),
-                    'namespaces' => Config::get()->controllerPath
-                  ]
-                );
+                Logger::instance()->error('Couldnt find Application controller, exiting!');
 
                 exit;
             }
         } else {
             $slug = array_slice($slug, 1);
         }
+
         return $slug;
     }
 
