@@ -5,6 +5,7 @@ namespace Scandio\lmvc;
 use Scandio\lmvc\utils\bootstrap;
 use Scandio\lmvc\utils\config\Config;
 use Scandio\lmvc\utils\string\StringUtils;
+use Scandio\lmvc\utils\logger\Logger;
 
 /**
  * Class LVC
@@ -85,16 +86,19 @@ class LVC
      */
     private function __construct()
     {
-        $this->protocol = (isset($_SERVER['HTTPS'])) ? 'https' : 'http';
-        $this->host = $_SERVER['HTTP_HOST'];
-        $this->referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
-        $this->uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-        $this->requestMethod = $_SERVER['REQUEST_METHOD'];
-        $slug = (isset($_GET['app-slug'])) ? explode('/', $_GET['app-slug']) : array("");
-        $slug = $this->setController($slug);
-        $this->params = $this->setAction($slug);
-        $this->request = array_slice($_GET, 1);
-        $this->request = array_merge($this->request, $_POST);
+        $this->protocol         = (isset($_SERVER['HTTPS'])) ? 'https' : 'http';
+        $this->host             = $_SERVER['HTTP_HOST'];
+        $this->referer          = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
+        $this->uri              = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+        $this->requestMethod    = $_SERVER['REQUEST_METHOD'];
+
+        $slug                   = (isset($_GET['app-slug'])) ? explode('/', $_GET['app-slug']) : array("");
+        $slug                   = $this->setController($slug);
+
+        $this->params           = $this->setAction($slug);
+        $this->request          = array_slice($_GET, 1);
+        $this->request          = array_merge($this->request, $_POST);
+
         if ($this->requestMethod == 'PUT' || $this->requestMethod == 'DELETE') {
             parse_str(file_get_contents('php://input'), $params);
             $this->request = array_merge($params);
@@ -170,9 +174,7 @@ class LVC
         } elseif (is_string($module)) {
             $modulePaths[] = $module;
         } else {
-            echo PHP_EOL . "<!-- Couldn't register ModuleNamespace:" . PHP_EOL;
-            print_r($module);
-            echo "-->" . PHP_EOL;
+            Logger::instance()->error('Couldnt register ModuleNamespace: {namespace}!', ['namespace' => $module]);
         }
 
         return $modulePaths;
@@ -194,9 +196,8 @@ class LVC
         } elseif (is_string($controller)) {
             $namespace = $controller;
         } else {
-            echo PHP_EOL . "<!-- Couldn't register ControllerNamespace:" . PHP_EOL;
-            print_r($controller);
-            echo "-->" . PHP_EOL;
+            Logger::instance()->error('Couldnt register ControllerNamespace: {namespace}!', ['namespace' => $controller]);
+
             return;
         }
         array_unshift(Config::get()->controllerPath, $namespace);
@@ -259,17 +260,24 @@ class LVC
         $this->controller = ucfirst(StringUtils::camelCaseFrom($slug[0]));
 
         if (!self::searchController()) {
+            Logger::instance()->error(
+              'Couldnt find the Controller {controller} in the following namespaces: {namespaces}!', [
+                'controller' => $this->controller,
+                'namespaces' => Config::get()->controllerPath
+              ]
+            );
+
             $this->controller = 'Application';
+
             if (!self::searchController()) {
-                echo PHP_EOL . "<!-- Couldn't find either the Controller '" . ucfirst(StringUtils::camelCaseFrom($slug[0])) .
-                    "' or '" . $this->controller . "' in the following namespaces:" . PHP_EOL . PHP_EOL;
-                print_r(Config::get()->controllerPath);
-                echo "-->" . PHP_EOL;
+                Logger::instance()->error('Couldnt find Application controller, exiting!');
+
                 exit;
             }
         } else {
             $slug = array_slice($slug, 1);
         }
+
         return $slug;
     }
 
